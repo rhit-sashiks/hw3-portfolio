@@ -3,7 +3,7 @@ async function scrollToNextPageIfAtEnd(isEnd) {
     let currentY = window.scrollY
 
     let scrollToTopBtn = document.querySelector("#scrolltotop-btn")
-    if (currentY > 30) {
+    if (currentY > 20) {
         scrollToTopBtn.classList.add("scrolltotop-btn-visible")
     } else {
         scrollToTopBtn.classList.remove("scrolltotop-btn-visible")
