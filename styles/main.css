@@ -54,16 +54,18 @@ header {
     background-color: var(--background-color-header-nav);
 }
 
+a {
+    color: var(--default-link-color);
+}
+
 
 #header-nav a {
-    /* TODO */
-    color: var(--default-link-color);
     font-size: 20px;
     font-weight: bolder;
     padding: 5px;
 }
 
-#header-nav a:hover {
+a:hover {
     background-color: white;
 
     /* Border radius */
