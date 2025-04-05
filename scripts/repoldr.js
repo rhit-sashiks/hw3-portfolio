@@ -1,28 +1,78 @@
 let startUrl = `https://api.github.com/users/cheesycod/repos`
-const featuredOrgs = ["Anti-Raid"]
+const MAX_REPOS_WITH_FORKS = 10
+const featuredOrgs = ["cheesycod", "Anti-Raid", "InfinityBotList"]
 
-async function createError(rootEl, resp) {
+async function createError(rootEl, resp, context) {
     let errEl = document.createElement("p");
     errEl.classList.add("error");
 
     let error = "Something went wrong while trying to fetch repo contents"
 
-    try {
-        error = (await resp.json())["message"]
-    } catch (err) {
-        console.error(err)
+    if (resp) {
+        try {
+            error = (await resp.json())["message"]
+        } catch (err) {
+            console.error(err)
+        }
     }
 
     errEl.textContent = error
-    rootEl.appendChild(err);
+
+    if (context) {
+        errEl.textContent = `${context}: ${errEl.textContent}`
+    }
+
+    rootEl.appendChild(errEl);
 }
 
-async function cachedFetch(url) {
+async function cachedFetch(url, times) {
     if (localStorage.getItem(url)) {
         // Return a new response to the caller containing the cached content
         return new Response(localStorage.getItem(url))
     } else {
-        return await fetch(url)
+        // I prefer fetch to XMLHttpRequest since it's just an easier API to actually use.
+        //
+        // I also prefer async function over Promise.then usually as well so I might just be weird that way :)
+        let resp = await fetch(url)
+        console.log(`resp status: ${resp.status}`)
+
+        if (resp.status == 429) {
+            times = times || 0
+
+            if (times > 10) {
+                throw new Error(`Failed to fetch url ${url} due to running into ratelimits over ${times} times!`)
+            }
+
+            let retryAfter = parseFloat(resp.headers.get("Retry-After") || "10") || 10
+
+            // Citation: https://stackoverflow.com/questions/951021/what-is-the-javascript-version-of-sleep
+            await new Promise(resolve => setTimeout(resolve, retryAfter * (2 ** times) * 1000))
+
+            return await cachedFetch(url, times + 1)
+        }
+
+        if (resp.status === 403) {
+            console.log("403 case entered")
+            times = times || 0
+
+            if (times > 10) {
+                throw new Error(`Failed to fetch url ${url} due to running into ratelimits over ${times} times!`)
+            }
+
+            console.log("is here")
+
+            let retryAfterF = parseFloat(resp.headers.get("x-ratelimit-reset") || "")
+
+            let retryAfter = retryAfterF ? ((retryAfterF - Date.now() / 1000) + 10) : 60
+
+            console.log(`Waiting ${retryAfter}`)
+
+            // Citation: https://stackoverflow.com/questions/951021/what-is-the-javascript-version-of-sleep
+            await new Promise(resolve => setTimeout(resolve, retryAfter * (2 ** times) * 1000))
+
+            return await cachedFetch(url, times + 1)
+        }
+        return resp
     }
 }
 
@@ -45,7 +95,7 @@ async function createReposOnRoot(rootEl, repo, careAboutForks, level) {
             await createError(rootEl, parentRepo)
         } else {
             let parentRepoData = await parentRepo.json();
-            forkedFromName = parentRepoData.parent.name
+            forkedFromName = parentRepoData.parent.full_name
             forkedFromHtmlUrl = parentRepoData.parent.html_url
             console.log("fork repo data", parentRepoData.parent)
             localStorage.setItem(repo.url, JSON.stringify(parentRepoData))
@@ -67,52 +117,28 @@ async function createReposOnRoot(rootEl, repo, careAboutForks, level) {
         let forkedFromEl = document.createElement("p")
         forkedFromEl.innerHTML = `<em>Forked from <a href='${forkedFromHtmlUrl}'>${forkedFromName}</a></em>`
         projectBox.appendChild(forkedFromEl)
-        console.log(forkedFromEl)
     }
 
     projectBox.appendChild(descriptionElement)
     projectBox.appendChild(viewRepoLink)
     rootEl.appendChild(projectBox)
 
-    console.log(repo)
+    //console.log(repo)
 }
 
-async function createRepoList(rootElSelector) {
-    let rootEl = document.querySelector(rootElSelector)
-
+async function createRepoList(rootEl, careAboutForks) {
     // Add loading text
     let loadingEl = document.createElement("p")
-    loadingEl.textContent = "Loading data for cheesycod";
+    loadingEl.textContent = "Loading data for featured orgs"
     rootEl.appendChild(loadingEl)
 
-    // I prefer fetch to XMLHttpRequest since it's just an easier API to actually use.
-    //
-    // I also prefer async function over Promise.then usually as well so I might just be weird that way :)
-    let repoData = await cachedFetch(startUrl) // Fetch from github API
-    if (!repoData.ok) {
-        await createError(rootEl, repoData)
-        return
-    }
-
-    let repoList = null;
-    try {
-        repoList = await repoData.json()
-    } catch (err) {
-        await createError(rootEl, repoData) // create a error
-        return
-    }
-    localStorage.setItem(startUrl, JSON.stringify(repoList))
-    for (let repo of repoList) {
-        await createReposOnRoot(rootEl, repo, true, 3)
-    }
-
-    loadingEl.textContent = "Loading data for featured orgs"
-
+    let numReposWithForks = 0
     for (let org of featuredOrgs) {
-        let url = `https://api.github.com/users/${org}/repos`
+        console.log(org)
+        let url = `https://api.github.com/users/${org}/repos?per_page=100&sort=updated`
         let repoData = await cachedFetch(url) // Fetch from github API
         if (!repoData.ok) {
-            await createError(rootEl, repoData)
+            await createError(rootEl, repoData, `Error while fetching ${org}`)
             continue
         }
 
@@ -120,7 +146,7 @@ async function createRepoList(rootElSelector) {
         try {
             repoList = await repoData.json()
         } catch (err) {
-            await createError(rootEl, repoData)
+            await createError(rootEl, repoData, `Error while fetching ${org}`)
             continue
         }
         localStorage.setItem(url, JSON.stringify(repoList))
@@ -129,8 +155,12 @@ async function createRepoList(rootElSelector) {
         orgNameEl = document.createElement("h3")
         orgNameEl.textContent = org
         orgSection.appendChild(orgNameEl)
+
         for (let repo of repoList) {
-            await createReposOnRoot(orgSection, repo, false, 4)
+            if (repo.fork) {
+                numReposWithForks++
+            }
+            await createReposOnRoot(orgSection, repo, careAboutForks && numReposWithForks < MAX_REPOS_WITH_FORKS, 4) // No fork detection for orgs to avoid spamming github
         }
         rootEl.appendChild(orgSection)
     }
@@ -139,5 +169,33 @@ async function createRepoList(rootElSelector) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    createRepoList("#github-project-area")
+    let rootElOuter = document.querySelector("#github-project-area")
+    let rootEl = document.createElement("div")
+    rootEl.id = "a" // this is what is first presented to users
+    rootElOuter.appendChild(rootEl)
+
+    createRepoList(rootEl, false)
+        .then(() => {
+            console.log("am done with base")
+            let rootElTwo = document.createElement("div-2")
+            rootElTwo.id = "b"
+            rootElTwo.style.display = "none" // hide the second div initially in background until its finished loading
+            rootElOuter.appendChild(rootElTwo)
+
+            // Render with forks in a hidden div
+            createRepoList(rootElTwo, true)
+                .then(() => {
+                    console.log("am done with fork")
+                    rootElTwo.style.display = ""
+                    rootEl.remove()
+                })
+                .catch((err) => {
+                    console.error(err)
+                    createError(rootEl, null, `Failed to render projects [${err}]`)
+                })
+        })
+        .catch((err) => {
+            console.error(err)
+            createError(rootEl, null, `Failed to render projects [${err}]`)
+        })
 })
