@@ -120,6 +120,13 @@ async function createReposOnRoot(rootEl, repo, careAboutForks, level) {
     }
 
     projectBox.appendChild(descriptionElement)
+
+    if (license) {
+        let licenseEl = document.createElement("p")
+        licenseEl.textContent = `License: ${license.name} [${license.spdx_id}]`
+        projectBox.appendChild(licenseEl)
+    }
+
     projectBox.appendChild(viewRepoLink)
     rootEl.appendChild(projectBox)
 
