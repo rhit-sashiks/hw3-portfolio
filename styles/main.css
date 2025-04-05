@@ -1,1 +1,127 @@
 /*TODO*/
+:root {
+    --background-color: rgb(212, 219, 188);
+    --background-color-header-nav: rgb(198, 218, 136);
+    --default-img-width: 200px;
+    --default-link-color: rgb(25, 27, 19);
+    --large-header: 38px;
+    --section-content-font-size: 18px;
+
+    background-color: var(--background-color);
+
+    /*CITATION: VSCode autocompleted this font family for me */
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+
+/* Base styles from hw1 that i liked */
+
+/* The below rule was also found from inspect elementing my rose hulman, seems to be part of the solution for my browser autoadding margins here for whatever reason */
+body,
+html {
+    width: 100%;
+}
+
+/*Found some nice compat styles from my rose hulman for the body*/
+body {
+    margin: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding: 0;
+
+    /* CITATION: https://dev.to/nehalahmadkhan/how-to-make-footer-stick-to-bottom-of-web-page-3i14 */
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/*Avoid useless margin on nav/h1/section tag (is it just my browser or does the browser just add a 8px margin to these days for some dumb reason) */
+nav,
+h1,
+section,
+header {
+    margin: 0;
+}
+
+/* end base styles from hw1 */
+
+#header-nav {
+    min-height: 48px;
+    line-height: 48px;
+    border-spacing: 0;
+    padding-left: 20px;
+    display: flex;
+    justify-content: space-evenly;
+    background-color: var(--background-color-header-nav);
+}
+
+
+#header-nav a {
+    /* TODO */
+    color: var(--default-link-color);
+    font-size: 20px;
+    font-weight: bolder;
+    padding: 5px;
+}
+
+#header-nav a:hover {
+    background-color: white;
+
+    /* Border radius */
+    border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    -ms-border-radius: 5px;
+    -o-border-radius: 5px;
+
+    /* CITATION: https://developer.mozilla.org/en-US/docs/Web/CSS/box-shadow and https://stackoverflow.com/questions/5608222/how-to-apply-box-shadow-on-all-four-sides (for help in the numbers) with some adjustments for a nice shadow around the links upon hover*/
+    box-shadow: 0 0 3px 3px black;
+}
+
+#img-me {
+    width: var(--default-img-width);
+}
+
+/* Set main's margin left using media queries to ensure its nice and responsive */
+
+/* I forgot the syntax for media queries, so had to look it up on https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_media_queries/Using_media_queries */
+@media (30em <=width) {
+    .section-content {
+        padding-left: 5px;
+        padding-right: 5px;
+    }
+}
+
+@media (30em <=width <=70em) {
+    .section-content {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+}
+
+@media (width >=70em) {
+    .section-content {
+        padding-left: 90px;
+        padding-right: 90px;
+    }
+}
+
+.centered-intro {
+    text-align: center;
+}
+
+.large-header {
+    font-size: var(--large-header);
+}
+
+.section-content {
+    font-size: var(--section-content-font-size);
+}
+
+main {
+    margin-bottom: 40px;
+}
+
+footer {
+    margin-top: auto;
+    background-color: black;
+}
