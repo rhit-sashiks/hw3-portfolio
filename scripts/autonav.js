@@ -1,5 +1,9 @@
 const MIN_HEIGHT_TILL_AUTONEXT = 10
 async function scrollToNextPageIfAtEnd(currentY, isEnd) {
+    // Wait 500 ms to make sure the user can at least see whats in the footer
+    // Citation: https://stackoverflow.com/questions/951021/what-is-the-javascript-version-of-sleep
+    await new Promise(resolve => setTimeout(resolve, 500))
+
     console.log(currentY)
     if (currentY == 0) {
         let path = window.location.pathname.split("?")[0]
@@ -17,11 +21,7 @@ async function scrollToNextPageIfAtEnd(currentY, isEnd) {
         return // only proceed if the user has *finished* scrolling to improve user engagement
     }
 
-    // Wait 500 ms to make sure the user can at least see whats in the footer
-    // Citation: https://stackoverflow.com/questions/951021/what-is-the-javascript-version-of-sleep
-    await new Promise(resolve => setTimeout(resolve, 500))
-
-    /*CITATION: https://developer.mozilla.org/en-US/docs/Web/API/Window/innerHeight and https://developer.mozilla.org/en-US/docs/Web/API/Element/clientHeight for starting resources and then a ton of experimentation in the browser devtools*/
+    /*CITATION: https://developer.mozilla.org/en-US/docs/Web/API/Window/innerHeight and https://developer.mozilla.org/en-US/docs/Web/API/Element/clientHeight for starting resources. Some experimentation in the browser devtools then brought me to scrollHeight and visualViewport.height (i still dont know what visualviewport is but the browser devtools says it exists and it seems to work for the purpose of determining end of page) */
     let pageHeight = document.querySelector("html").scrollHeight - visualViewport.height
     console.log(pageHeight, currentY, pageHeight - currentY)
 

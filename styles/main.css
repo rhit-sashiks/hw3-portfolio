@@ -214,3 +214,7 @@ On large enough viewport width, use grid to show project and github project card
     color: red;
     font-size: bold;
 }
+
+.margin-3px {
+    margin-bottom: 3px;
+}

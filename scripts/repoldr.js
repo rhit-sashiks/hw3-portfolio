@@ -121,7 +121,7 @@ async function createReposOnRoot(rootEl, repo, careAboutForks, level) {
         projectBox.appendChild(forkedFromEl)
     } else {
         let forkedFromEl = document.createElement("p")
-        forkedFromEl.innerHTML = `<em>Repo is not a fork</em>`
+        forkedFromEl.innerHTML = `<em>Repo fork status cannot be determined</em>`
         projectBox.appendChild(forkedFromEl)
     }
 
