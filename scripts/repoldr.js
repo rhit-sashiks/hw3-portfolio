@@ -87,6 +87,7 @@ async function createReposOnRoot(rootEl, repo, careAboutForks, level) {
     let forkedFromHtmlUrl = null
 
     let projectBox = document.createElement("section")
+    projectBox.classList.add("card")
 
     if (repo.fork && careAboutForks) {
         // Get the parent repo to handle forks
@@ -159,15 +160,20 @@ async function createRepoList(rootEl, careAboutForks) {
         localStorage.setItem(url, JSON.stringify(repoList))
 
         orgSection = document.createElement("section")
-        orgNameEl = document.createElement("h3")
+        orgNameEl = document.createElement("h2")
+        orgNameEl.classList.add("gitrepoorgname")
         orgNameEl.textContent = org
         orgSection.appendChild(orgNameEl)
+
+        let orgRepos = document.createElement("div")
+        orgRepos.classList.add("gh-project-cards")
+        orgSection.appendChild(orgRepos)
 
         for (let repo of repoList) {
             if (repo.fork) {
                 numReposWithForks++
             }
-            await createReposOnRoot(orgSection, repo, careAboutForks && numReposWithForks < MAX_REPOS_WITH_FORKS, 4) // No fork detection for orgs to avoid spamming github
+            await createReposOnRoot(orgRepos, repo, careAboutForks && numReposWithForks < MAX_REPOS_WITH_FORKS, 3) // No fork detection for orgs to avoid spamming github
         }
         rootEl.appendChild(orgSection)
     }
@@ -184,7 +190,7 @@ document.addEventListener("DOMContentLoaded", () => {
     createRepoList(rootEl, false)
         .then(() => {
             console.log("am done with base")
-            let rootElTwo = document.createElement("div-2")
+            let rootElTwo = document.createElement("div")
             rootElTwo.id = "b"
             rootElTwo.style.display = "none" // hide the second div initially in background until its finished loading
             rootElOuter.appendChild(rootElTwo)

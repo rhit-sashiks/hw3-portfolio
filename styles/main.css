@@ -13,7 +13,7 @@
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }
 
-/* Base styles from hw1 that i liked */
+/* Base styles from hw1 that i liked with some modification/expansion for footer */
 
 /* The below rule was also found from inspect elementing my rose hulman, seems to be part of the solution for my browser autoadding margins here for whatever reason */
 body,
@@ -34,9 +34,11 @@ body {
     flex-direction: column;
 }
 
-/*Avoid useless margin on nav/h1/section tag (is it just my browser or does the browser just add a 8px margin to these days for some dumb reason) */
+/*Avoid useless margin on nav/h1/h2/h3/section/header tag (is it just my browser or does the browser just add a 8px margin to these days for some dumb reason) */
 nav,
 h1,
+h2,
+h3,
 section,
 header {
     margin: 0;
@@ -85,7 +87,7 @@ a:hover {
 
 /* Set main's margin left using media queries to ensure its nice and responsive */
 
-/* I forgot the syntax for media queries, so had to look it up on https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_media_queries/Using_media_queries */
+/* I forgot the syntax for media queries, so had to look it up on MDN: https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_media_queries/Using_media_queries */
 @media (30em <=width) {
     .section-content {
         padding-left: 5px;
@@ -126,6 +128,41 @@ main {
 footer {
     margin-top: auto;
     background-color: black;
+}
+
+
+/*
+On large enough viewport width, use grid to show project and github project card container in a nice evenly spaced fashion
+
+(seriously, why did I not know about grid sooner... it would have made some of my hobby websites easier to code than doing everything by spamming flexbox and floats everywhere) :/...
+*/
+@media (width >=80em) {
+
+    /*CITATION: https://css-tricks.com/snippets/css/complete-guide-grid/*/
+    .project-cards {
+        display: grid;
+        grid-template-columns: 400px 400px 400px;
+        row-gap: 50px;
+        justify-content: space-between;
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+
+    /*CITATION: https://css-tricks.com/snippets/css/complete-guide-grid/*/
+    .gh-project-cards {
+        display: grid;
+        grid-template-columns: 300px 300px 300px 300px;
+        row-gap: 25px;
+        justify-content: space-between;
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+}
+
+.card {
+    border: solid 1px;
+    height: 100%;
+    padding: 2px;
 }
 
 .error {
