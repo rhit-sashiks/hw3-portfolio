@@ -142,16 +142,6 @@ On large enough viewport width, use grid to show project and github project card
     .project-cards {
         display: grid;
         grid-template-columns: 400px 400px 400px;
-        row-gap: 50px;
-        justify-content: space-between;
-        margin-top: 10px;
-        margin-bottom: 10px;
-    }
-
-    /*CITATION: https://css-tricks.com/snippets/css/complete-guide-grid/*/
-    .gh-project-cards {
-        display: grid;
-        grid-template-columns: 300px 300px 300px 300px;
         row-gap: 25px;
         justify-content: space-between;
         margin-top: 10px;
@@ -163,6 +153,12 @@ On large enough viewport width, use grid to show project and github project card
     border: solid 1px;
     height: 100%;
     padding: 2px;
+    display: flex;
+    flex-direction: column;
+}
+
+.card-bottom {
+    margin-top: auto;
 }
 
 .error {

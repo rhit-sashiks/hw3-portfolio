@@ -1,6 +1,6 @@
 let startUrl = `https://api.github.com/users/cheesycod/repos`
 const MAX_REPOS_WITH_FORKS = 10
-const featuredOrgs = ["cheesycod", "Anti-Raid", "InfinityBotList"]
+const featuredOrgs = ["rhit-sashiks", "cheesycod", "Anti-Raid", "InfinityBotList"]
 
 async function createError(rootEl, resp, context) {
     let errEl = document.createElement("p");
@@ -106,10 +106,11 @@ async function createReposOnRoot(rootEl, repo, careAboutForks, level) {
     let nameElement = document.createElement(`h${level}`)
     nameElement.textContent = name
     let descriptionElement = document.createElement("p")
-    descriptionElement.textContent = description
+    descriptionElement.textContent = description || "No description provided. Why don't you try looking at the repo or maybe you need some advice first before you click?"
     let viewRepoLink = document.createElement("a")
     viewRepoLink.href = htmlUrl
     viewRepoLink.textContent = "View Repository Here"
+    viewRepoLink.classList.add("card-bottom")
 
     projectBox.appendChild(nameElement)
 
@@ -118,15 +119,23 @@ async function createReposOnRoot(rootEl, repo, careAboutForks, level) {
         let forkedFromEl = document.createElement("p")
         forkedFromEl.innerHTML = `<em>Forked from <a href='${forkedFromHtmlUrl}'>${forkedFromName}</a></em>`
         projectBox.appendChild(forkedFromEl)
+    } else {
+        let forkedFromEl = document.createElement("p")
+        forkedFromEl.innerHTML = `<em>Repo is not a fork</em>`
+        projectBox.appendChild(forkedFromEl)
     }
-
-    projectBox.appendChild(descriptionElement)
 
     if (license) {
         let licenseEl = document.createElement("p")
         licenseEl.textContent = `License: ${license.name} [${license.spdx_id}]`
         projectBox.appendChild(licenseEl)
+    } else {
+        let licenseEl = document.createElement("p")
+        licenseEl.textContent = `License: Unknown`
+        projectBox.appendChild(licenseEl)
     }
+
+    projectBox.appendChild(descriptionElement)
 
     projectBox.appendChild(viewRepoLink)
     rootEl.appendChild(projectBox)
@@ -166,7 +175,7 @@ async function createRepoList(rootEl, careAboutForks) {
         orgSection.appendChild(orgNameEl)
 
         let orgRepos = document.createElement("div")
-        orgRepos.classList.add("gh-project-cards")
+        orgRepos.classList.add("project-cards")
         orgSection.appendChild(orgRepos)
 
         for (let repo of repoList) {
