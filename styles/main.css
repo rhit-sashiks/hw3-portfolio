@@ -206,6 +206,12 @@ On large enough viewport width, use grid to show project and github project card
     flex-direction: column;
 }
 
+.card-logo {
+    display: block;
+    margin: auto;
+    text-align: center;
+}
+
 .card-bottom {
     margin-top: auto;
 }
