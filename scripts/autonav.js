@@ -64,6 +64,7 @@ document.addEventListener("DOMContentLoaded", () => {
             await new Promise(resolve => setTimeout(resolve, 100))
             continue
         }
+        await new Promise(resolve => setTimeout(resolve, 1000))
         tickingA = false
         tickingB = false
     })
