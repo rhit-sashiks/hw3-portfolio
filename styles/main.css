@@ -121,8 +121,56 @@ a:hover {
     font-size: var(--section-content-font-size);
 }
 
-main {
+.to-footer-spacing {
     margin-bottom: 40px;
+}
+
+.bg {
+    /*CITATION: https://developer.mozilla.org/en-US/docs/Web/CSS/Layout_cookbook/Center_an_element and https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_backgrounds_and_borders/Resizing_background_images and Wikipedia's page on cats for the cat picture*/
+    background-size: 100vw 100vh;
+    height: 100vh;
+    background-repeat: no-repeat;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.bg-text {
+    text-align: center;
+    font-size: 200px;
+    color: white;
+    background: rgba(0, 0, 0, 0.35);
+    border-radius: 4px;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    -ms-border-radius: 4px;
+    -o-border-radius: 4px;
+}
+
+/*From https://en.wikipedia.org/wiki/Cat#/media/File:Cat_August_2010-4.jpg*/
+.cat-bg {
+    background-image: url('../images/wikipedia_cat.png');
+}
+
+.coding-bg {
+    /* Background of the code of a CSSE280 lab */
+    background-image: url('../images/coding_webserver.png')
+}
+
+.swimmingpool-bg {
+    /* From https://en.wikipedia.org/wiki/Swimming_pool#/media/File:Olympic_Swimming_Pool_-_Fast_Lane.JPG */
+    background-image: url('../images/wikipedia_swimmingpool.png')
+}
+
+.music-bg {
+    /* This is just a screenshot of a song I like listening to */
+    background-image: url('../images/listeningtomusic.png');
+}
+
+/*From https://www.rose-hulman.edu/visit/_assets/images/Image-Top-Carousel/Visit-C-top-Photo-Campus_Olin.jpg*/
+.rhcampus-bg {
+    background-image: url('../images/rhit.png')
 }
 
 footer {
