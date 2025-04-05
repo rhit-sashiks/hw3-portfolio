@@ -218,3 +218,21 @@ On large enough viewport width, use grid to show project and github project card
 .margin-3px {
     margin-bottom: 3px;
 }
+
+#scrolltotop-btn {
+    background-color: red;
+    padding: 15px;
+    color: white;
+    font-weight: bolder;
+    border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    -ms-border-radius: 5px;
+    -o-border-radius: 5px;
+}
+
+.scrolltotop-btn-visible {
+    position: fixed;
+    right: 3px;
+    bottom: 3px;
+}
