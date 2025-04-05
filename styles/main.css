@@ -140,6 +140,7 @@ a:hover {
     text-align: center;
     font-size: 200px;
     color: white;
+    /*35% background opacity for accessibility and readibility purposes*/
     background: rgba(0, 0, 0, 0.35);
     border-radius: 4px;
     -webkit-border-radius: 4px;
