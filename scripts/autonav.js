@@ -3,7 +3,7 @@ async function scrollToNextPageIfAtEnd(isEnd) {
     let currentY = window.scrollY
 
     let scrollToTopBtn = document.querySelector("#scrolltotop-btn")
-    if (currentY > 20) {
+    if (currentY > 100) {
         scrollToTopBtn.classList.add("scrolltotop-btn-visible")
     } else {
         scrollToTopBtn.classList.remove("scrolltotop-btn-visible")
@@ -64,6 +64,8 @@ document.addEventListener("DOMContentLoaded", () => {
             await new Promise(resolve => setTimeout(resolve, 100))
             continue
         }
+        scrollToTopBtn.classList.remove("scrolltotop-btn-visible")
+
         await new Promise(resolve => setTimeout(resolve, 1000))
         tickingA = false
         tickingB = false
