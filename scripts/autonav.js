@@ -1,5 +1,5 @@
 const MIN_HEIGHT_TILL_AUTONEXT = 10
-function scrollToNextPageIfAtEnd(currentY, isEnd) {
+async function scrollToNextPageIfAtEnd(currentY, isEnd) {
     console.log(currentY)
     if (currentY == 0) {
         let path = window.location.pathname.split("?")[0]
@@ -7,13 +7,19 @@ function scrollToNextPageIfAtEnd(currentY, isEnd) {
 
         if (path.endsWith("portfolio.html")) {
             window.location.href = "./about.html"
+        } else if (path.endsWith("about.html")) {
+            window.location.href = "./"
         }
         return
     }
 
     if (!isEnd) {
-        return
+        return // only proceed if the user has *finished* scrolling to improve user engagement
     }
+
+    // Wait 500 ms to make sure the user can at least see whats in the footer
+    // Citation: https://stackoverflow.com/questions/951021/what-is-the-javascript-version-of-sleep
+    await new Promise(resolve => setTimeout(resolve, 500))
 
     /*CITATION: https://developer.mozilla.org/en-US/docs/Web/API/Window/innerHeight and https://developer.mozilla.org/en-US/docs/Web/API/Element/clientHeight for starting resources and then a ton of experimentation in the browser devtools*/
     let pageHeight = document.querySelector("html").scrollHeight - visualViewport.height
@@ -28,6 +34,10 @@ function scrollToNextPageIfAtEnd(currentY, isEnd) {
 
     if (path.endsWith("about.html")) {
         window.location.href = "./portfolio.html"
+    } else if (path.endsWith("portfolio.html")) {
+        // Do nothing
+    } else {
+        window.location.href = "./about.html"
     }
 }
 
